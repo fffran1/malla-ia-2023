@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Malla IA UChile – Plan 2023 Semestres 1‑2</title>
+<style>
+body{margin:0;background:#111;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;}
+.grid{display:grid;grid-template-columns:repeat(2,260px);gap:15px;}
+.ramo{padding:10px;background:#333;border:2px solid #666;border-radius:8px;text-align:center;cursor:not-allowed;transition:0.2s;}
+.ramo.activo{background:#007bff;border-color:#00c3ff;color:#fff;cursor:pointer;}
+.ramo.completado{background:#00cc66;border-color:#00ff99;color:#000;}
+</style>
+</head><body>
+<div class="grid" id="malla">
+  <div class="ramo activo" data-id="QG1">Química General I</div>
+  <div class="ramo activo" data-id="CALC1">Introducción al Cálculo</div>
+  <div class="ramo activo" data-id="MEC">Mecánica</div>
+  <div class="ramo activo" data-id="TLQ">Técnicas de Laboratorio Químico</div>
+  <div class="ramo activo" data-id="ING1">Inglés I</div>
+  <div class="ramo activo" data-id="IIA1">Introducción IA I</div>
+  <div class="ramo activo" data-id="CFG">Formación General</div>
+
+  <div class="ramo" data-id="QG2">Química General II</div>
+  <div class="ramo" data-id="CALC2">Cálculo Diferencial e Integral</div>
+  <div class="ramo" data-id="EM">Electromagnetismo</div>
+  <div class="ramo" data-id="LLQ">Laboratorio Química General</div>
+  <div class="ramo" data-id="ING2">Inglés II</div>
+  <div class="ramo" data-id="IIA2">Introducción IA II</div>
+  <div class="ramo" data-id="BIO">Biología General</div>
+</div>
+
+<script>
+const relaciones = {
+  QG1: ["QG2","LLQ"],
+  CALC1: ["CALC2"],
+  TLQ: ["LLQ"],
+  IIA1: ["IIA2"],
+};
+document.querySelectorAll('.ramo').forEach(r=>{
+  r.addEventListener('click',()=>{
+    if(!r.classList.contains('activo')) return;
+    const id = r.dataset.id;
+    r.classList.replace('activo','completado');
+    (relaciones[id]||[]).forEach(dep=>{
+      const d = document.querySelector(`.ramo[data-id="${dep}"]`);
+      if(d && !d.classList.contains('completado')) d.classList.add('activo');
+    });
+  });
+});
+</script>
+</body></html>
