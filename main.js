@@ -1,9 +1,8 @@
 console.log("main.js cargado, ramos:", ramos ? ramos.length : "NO DEFINIDO");
-
 const STORAGE_KEY = "mallaActiva_IA";
 const ramosPorSemestre = {};
 
-// Organizar ramos por semestre y definir estado inicial
+// Organizar ramos por semestre
 ramos.forEach(r => {
   if (!ramosPorSemestre[r.semestre]) ramosPorSemestre[r.semestre] = [];
   ramosPorSemestre[r.semestre].push({ ...r, activo: r.requisitos.length === 0 });
@@ -39,7 +38,7 @@ function render() {
 
       if (r.activo) totalActivos++;
 
-      // Tooltip prerrequisitos
+      // Tooltip de prerrequisitos
       if (r.requisitos.length > 0) {
         const nombresReq = r.requisitos.map(id => {
           const reqRamos = ramos.find(x => x.id === id);
@@ -52,7 +51,6 @@ function render() {
         console.log("Añadiendo evento click a ramo:", r.id, r.nombre);
         toggleRamos(r.id);
       });
-
       semDiv.appendChild(ramosDiv);
     });
 
@@ -68,9 +66,11 @@ function toggleRamos(id) {
   const clickRamo = ramos.find(r => r.id === id);
 
   if (clickRamo.activo) {
+    // Desactivar ramo y sus dependientes
     clickRamo.activo = false;
     desactivarDependientes(clickRamo.id);
   } else {
+    // Verificar si puede activarse
     const puedeActivarse = clickRamo.requisitos.every(req => {
       const reqRamo = ramos.find(x => x.id === req);
       return reqRamo && reqRamo.activo;
@@ -78,6 +78,7 @@ function toggleRamos(id) {
 
     if (puedeActivarse || clickRamo.requisitos.length === 0) {
       clickRamo.activo = true;
+      activarDependientes(clickRamo.id);
     }
   }
 
@@ -89,6 +90,21 @@ function desactivarDependientes(idDesactivado) {
     if (r.requisitos.includes(idDesactivado) && r.activo) {
       r.activo = false;
       desactivarDependientes(r.id);
+    }
+  });
+}
+
+function activarDependientes(idActivado) {
+  ramos.forEach(r => {
+    if (!r.activo && r.requisitos.includes(idActivado)) {
+      const puedeActivarse = r.requisitos.every(req => {
+        const reqRamo = ramos.find(x => x.id === req);
+        return reqRamo && reqRamo.activo;
+      });
+      if (puedeActivarse) {
+        r.activo = true;
+        activarDependientes(r.id);
+      }
     }
   });
 }
@@ -107,4 +123,3 @@ function guardarEstado() {
 window.addEventListener("DOMContentLoaded", () => {
   render();
 });
-
