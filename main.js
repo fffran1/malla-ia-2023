@@ -1,3 +1,4 @@
+console.log("main.js cargado, ramos:", ramos ? ramos.length : "NO DEFINIDO");
 const STORAGE_KEY = "mallaActiva_IA";
 const ramosPorSemestre = {};
 
@@ -18,7 +19,8 @@ if (estadoGuardado) {
   });
 }
 
-function render() {
+function render(console.log("Añadiendo evento click a ramo:", r.id, r.nombre);
+) {
   mallaContainer.innerHTML = "";
   let totalActivos = 0;
 
@@ -49,6 +51,10 @@ function render() {
       ramosDiv.addEventListener("click", () => toggleRamos(r.id));
       semDiv.appendChild(ramosDiv);
     });
+    function toggleRamos(id) {
+  console.log("Se hizo click en ramo con id:", id);
+  // resto...
+}
 
     mallaContainer.appendChild(semDiv);
   });
