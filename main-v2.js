@@ -26,7 +26,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (estadoGuardado[r.id] !== undefined) {
       r.activo = estadoGuardado[r.id];
     } else {
-      r.activo = r.requisitos.length === 0;
+      r.activo = r.requisitos.length === 0; // activos por defecto si no tienen prerrequisitos
     }
 
     ramosPorSemestre[r.semestre].push(r);
@@ -47,8 +47,11 @@ function render() {
     semDiv.appendChild(titulo);
 
     ramosPorSemestre[sem].forEach(r => {
+      // Determinar si está desbloqueado (prerrequisitos activos) pero no activo
+      const desbloqueado = !r.activo && puedeActivarse(r);
+
       const rDiv = document.createElement("div");
-      rDiv.className = `ramos ${r.ambito} ${r.activo ? "activo" : ""}`;
+      rDiv.className = `ramos ${r.ambito} ${r.activo ? "activo" : ""} ${desbloqueado ? "desbloqueado" : ""}`;
       rDiv.textContent = r.nombre;
       rDiv.dataset.id = r.id;
 
@@ -62,9 +65,15 @@ function render() {
         rDiv.title = `Prerrequisitos: ${nombresReq}`;
       }
 
-      rDiv.addEventListener("click", () => {
-        toggleRamos(r.id);
-      });
+      // Sólo agregar evento click si activo o desbloqueado
+      if (r.activo || desbloqueado) {
+        rDiv.style.cursor = "pointer";
+        rDiv.addEventListener("click", () => {
+          toggleRamos(r.id);
+        });
+      } else {
+        rDiv.style.cursor = "not-allowed";
+      }
 
       semDiv.appendChild(rDiv);
     });
