@@ -57,8 +57,10 @@ function render() {
       }
 
       ramosDiv.addEventListener("click", () => {
-        console.log("Click en ramo:", r.id, r.nombre);
-        toggleRamos(r.id);
+        // Solo permitir click si el ramo está activo o si se puede activar
+        if (r.activo || puedeActivarse(r)) {
+          toggleRamos(r.id);
+        }
       });
 
       semDiv.appendChild(ramosDiv);
@@ -71,41 +73,30 @@ function render() {
   guardarEstado();
 }
 
-function toggleRamos(id) {
-  console.log("Se hizo click en ramo con id:", id);
-  const clickRamo = ramos.find(r => r.id === id);
+function puedeActivarse(ramo) {
+  return ramo.requisitos.every(reqId => {
+    const reqRamo = ramos.find(r => r.id === reqId);
+    return reqRamo && reqRamo.activo;
+  });
+}
 
-  if (!clickRamo) {
-    console.error("Ramo no encontrado con id:", id);
-    return;
-  }
+function toggleRamos(id) {
+  const clickRamo = ramos.find(r => r.id === id);
+  if (!clickRamo) return;
 
   if (clickRamo.activo) {
+    // Desactivar ramo clickeado y sus dependientes
     clickRamo.activo = false;
     desactivarDependientes(clickRamo.id);
   } else {
-    const puedeActivarse = clickRamo.requisitos.every(req => {
-      const reqRamo = ramos.find(x => x.id === req);
-      return reqRamo && reqRamo.activo;
-    });
-
-    if (puedeActivarse || clickRamo.requisitos.length === 0) {
+    // Solo activar si cumple requisitos
+    if (puedeActivarse(clickRamo) || clickRamo.requisitos.length === 0) {
       clickRamo.activo = true;
+    } else {
+      // No hacer nada si no cumple prerrequisitos
+      return;
     }
   }
-
-  // ✅ después de cambiar un ramo, revisa todos los que podrían activarse
-  ramos.forEach(r => {
-    if (!r.activo && r.requisitos.length > 0) {
-      const puedeActivarse = r.requisitos.every(req => {
-        const reqRamo = ramos.find(x => x.id === req);
-        return reqRamo && reqRamo.activo;
-      });
-      if (puedeActivarse) {
-        r.activo = true;
-      }
-    }
-  });
 
   render();
 }
