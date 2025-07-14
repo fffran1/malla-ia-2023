@@ -1,0 +1,36 @@
+body {
+  font-family: sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+}
+h1 {
+  text-align: center;
+}
+.grid-container {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+.semestre {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ramo {
+  padding: 10px;
+  border-radius: 5px;
+  color: #000;
+  cursor: pointer;
+  font-size: 0.9em;
+  border: 1px solid #ccc;
+  opacity: 0.5;
+}
+.ramo.activo {
+  opacity: 1;
+  border: 2px solid #000;
+}
+.am-intermedio     { background-color: #fff3b0; }
+.am-investigacion  { background-color: #c0f0c0; }
+.am-industria      { background-color: #ffd6a5; }
+.am-gestion        { background-color: #f5c3e0; }
+.am-ingles         { background-color: #add8e6; }
