@@ -90,3 +90,7 @@ const ramos = [
   { id: 68, nombre: "Práctica Profesional", semestre: 11, ambito: "am-industria", requisitos: [55] },
   { id: 69, nombre: "Actividad Final de Titulación", semestre: 11, ambito: "am-industria", requisitos: [55] }
 ];
+<script>
+  console.log("Total de ramos cargados:", ramos.length);
+  console.log("Primer ramo:", ramos[0]);
+</script>
