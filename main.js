@@ -9,20 +9,22 @@ window.addEventListener("DOMContentLoaded", () => {
   mallaContainer = document.getElementById("mallaContainer");
   contadorRamos = document.getElementById("contadorRamos");
 
+  // Cargar estado guardado
+  const estadoGuardado = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
   // Organizar ramos por semestre
   ramosPorSemestre = {};
   ramos.forEach(r => {
     if (!ramosPorSemestre[r.semestre]) ramosPorSemestre[r.semestre] = [];
-    ramosPorSemestre[r.semestre].push({ ...r, activo: r.requisitos.length === 0 });
-  });
 
-  // Cargar estado guardado
-  const estadoGuardado = JSON.parse(localStorage.getItem(STORAGE_KEY));
-  if (estadoGuardado) {
-    ramos.forEach(r => {
-      if (estadoGuardado[r.id] !== undefined) r.activo = estadoGuardado[r.id];
-    });
-  }
+    if (estadoGuardado && estadoGuardado[r.id] !== undefined) {
+      r.activo = estadoGuardado[r.id];
+    } else {
+      r.activo = r.requisitos.length === 0;
+    }
+
+    ramosPorSemestre[r.semestre].push(r);
+  });
 
   render();
 });
