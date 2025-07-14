@@ -1,5 +1,4 @@
 const ramos = [
-  // Semestre 1
   { id: 1, nombre: "Química General I", semestre: 1, ambito: "am-intermedio", requisitos: [] },
   { id: 2, nombre: "Técnicas de Laboratorio Químico", semestre: 1, ambito: "am-intermedio", requisitos: [] },
   { id: 3, nombre: "Mecánica", semestre: 1, ambito: "am-intermedio", requisitos: [] },
@@ -8,7 +7,6 @@ const ramos = [
   { id: 6, nombre: "Cursos de Formación General", semestre: 1, ambito: "am-intermedio", requisitos: [] },
   { id: 7, nombre: "Inglés I", semestre: 1, ambito: "am-ingles", requisitos: [] },
 
-  // Semestre 2
   { id: 8, nombre: "Química General II", semestre: 2, ambito: "am-intermedio", requisitos: [1] },
   { id: 9, nombre: "Laboratorio de Química General", semestre: 2, ambito: "am-intermedio", requisitos: [2] },
   { id: 10, nombre: "Electromagnetismo", semestre: 2, ambito: "am-intermedio", requisitos: [3] },
@@ -17,7 +15,6 @@ const ramos = [
   { id: 13, nombre: "Introducción a la Ingeniería en Alimentos II", semestre: 2, ambito: "am-industria", requisitos: [5] },
   { id: 14, nombre: "Inglés II", semestre: 2, ambito: "am-ingles", requisitos: [7] },
 
-  // Semestre 3
   { id: 15, nombre: "Química Orgánica I", semestre: 3, ambito: "am-intermedio", requisitos: [8] },
   { id: 16, nombre: "Química Analítica", semestre: 3, ambito: "am-intermedio", requisitos: [8, 9] },
   { id: 17, nombre: "Laboratorio I de Química Orgánica", semestre: 3, ambito: "am-intermedio", requisitos: [8] },
@@ -26,7 +23,6 @@ const ramos = [
   { id: 20, nombre: "Comunicación Escrita para IA", semestre: 3, ambito: "am-intermedio", requisitos: [13] },
   { id: 21, nombre: "Inglés III", semestre: 3, ambito: "am-ingles", requisitos: [14] },
 
-  // Semestre 4
   { id: 22, nombre: "Química Orgánica II", semestre: 4, ambito: "am-intermedio", requisitos: [15] },
   { id: 23, nombre: "Laboratorio de análisis químico", semestre: 4, ambito: "am-intermedio", requisitos: [16, 18] },
   { id: 24, nombre: "Química Analítica II", semestre: 4, ambito: "am-intermedio", requisitos: [16] },
@@ -35,7 +31,6 @@ const ramos = [
   { id: 27, nombre: "Computación", semestre: 4, ambito: "am-intermedio", requisitos: [18] },
   { id: 28, nombre: "Inglés IV", semestre: 4, ambito: "am-ingles", requisitos: [21] },
 
-  // Semestre 5
   { id: 29, nombre: "Laboratorio de Análisis Instrumental", semestre: 5, ambito: "am-intermedio", requisitos: [22, 24] },
   { id: 30, nombre: "Materias Primas Vegetales y Animales", semestre: 5, ambito: "am-industria", requisitos: [12] },
   { id: 31, nombre: "Fisicoquímica Orientada a los Alimentos", semestre: 5, ambito: "am-industria", requisitos: [25] },
@@ -44,7 +39,6 @@ const ramos = [
   { id: 34, nombre: "Ecuaciones Diferenciales", semestre: 5, ambito: "am-intermedio", requisitos: [19] },
   { id: 35, nombre: "Módulo Gestión I (Gestión Administrativa y Económica)", semestre: 5, ambito: "am-gestion", requisitos: [18] },
 
-  // Semestre 6
   { id: 36, nombre: "Bioquímica General", semestre: 6, ambito: "am-intermedio", requisitos: [22, 30] },
   { id: 37, nombre: "Química y Análisis de los Alimentos", semestre: 6, ambito: "am-intermedio", requisitos: [29] },
   { id: 38, nombre: "Operaciones Unitarias I", semestre: 6, ambito: "am-industria", requisitos: [31] },
@@ -52,7 +46,6 @@ const ramos = [
   { id: 40, nombre: "Módulo Gestión II (Gestión Contable y Costos)", semestre: 6, ambito: "am-gestion", requisitos: [35] },
   { id: 41, nombre: "Práctica I / Unidad de Investigación", semestre: 6, ambito: "am-industria", requisitos: [33] },
 
-  // Semestre 7
   { id: 42, nombre: "Bioquímica de los Alimentos", semestre: 7, ambito: "am-intermedio", requisitos: [36] },
   { id: 43, nombre: "Nutrición", semestre: 7, ambito: "am-intermedio", requisitos: [30] },
   { id: 44, nombre: "Operaciones Unitarias II", semestre: 7, ambito: "am-industria", requisitos: [38] },
@@ -60,7 +53,6 @@ const ramos = [
   { id: 46, nombre: "Gestión Financiera", semestre: 7, ambito: "am-gestion", requisitos: [40] },
   { id: 47, nombre: "Legislación Alimentaria", semestre: 7, ambito: "am-industria", requisitos: [37] },
 
-  // Semestre 8
   { id: 48, nombre: "Seguridad Industrial", semestre: 8, ambito: "am-industria", requisitos: [38] },
   { id: 49, nombre: "Microbiología e Inocuidad de los Alimentos", semestre: 8, ambito: "am-intermedio", requisitos: [36] },
   { id: 50, nombre: "Higiene y Sanidad Industrial", semestre: 8, ambito: "am-industria", requisitos: [49] },
@@ -69,7 +61,6 @@ const ramos = [
   { id: 53, nombre: "Diseño de Plantas", semestre: 8, ambito: "am-industria", requisitos: [39] },
   { id: 54, nombre: "Diseño de Experimentos", semestre: 8, ambito: "am-industria", requisitos: [18] },
 
-  // Semestre 9
   { id: 55, nombre: "Práctica II", semestre: 9, ambito: "am-industria", requisitos: [41, 48] },
   { id: 56, nombre: "Evaluación Sensorial", semestre: 9, ambito: "am-intermedio", requisitos: [18, 52] },
   { id: 57, nombre: "Ingeniería de Procesos de Conservación de Alimentos", semestre: 9, ambito: "am-industria", requisitos: [44, 51, 52] },
@@ -77,7 +68,6 @@ const ramos = [
   { id: 59, nombre: "Ingeniería de Procesos de Productos del Mar", semestre: 9, ambito: "am-industria", requisitos: [44] },
   { id: 60, nombre: "Evaluación de Proyectos", semestre: 9, ambito: "am-gestion", requisitos: [46] },
 
-  // Semestre 10
   { id: 61, nombre: "Ingeniería de Procesos por Altas Presiones", semestre: 10, ambito: "am-industria", requisitos: [52] },
   { id: 62, nombre: "Ingeniería de Procesos en Cárnicos", semestre: 10, ambito: "am-industria", requisitos: [44] },
   { id: 63, nombre: "Ingeniería de Procesos de Lácteos", semestre: 10, ambito: "am-industria", requisitos: [44] },
@@ -85,10 +75,10 @@ const ramos = [
   { id: 65, nombre: "Gestión de Calidad", semestre: 10, ambito: "am-industria", requisitos: [50] },
   { id: 66, nombre: "Electivos Especializados", semestre: 10, ambito: "am-intermedio", requisitos: [] },
 
-  // Semestre 11
   { id: 67, nombre: "Electivo Especializado", semestre: 11, ambito: "am-intermedio", requisitos: [66] },
   { id: 68, nombre: "Práctica Profesional", semestre: 11, ambito: "am-industria", requisitos: [55] },
   { id: 69, nombre: "Actividad Final de Titulación", semestre: 11, ambito: "am-industria", requisitos: [55] }
 ];
-  console.log("Total de ramos cargados:", ramos.length);
-  console.log("Primer ramo:", ramos[0]);
+
+console.log("Total de ramos cargados:", ramos.length);
+console.log("Primer ramo:", ramos[0]);
