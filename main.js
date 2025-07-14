@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Cargar estado guardado
   const estadoGuardado = JSON.parse(localStorage.getItem(STORAGE_KEY));
 
-  // Organizar ramos por semestre
+  // Organizar ramos por semestre y asignar estado .activo
   ramosPorSemestre = {};
   ramos.forEach(r => {
     if (!ramosPorSemestre[r.semestre]) ramosPorSemestre[r.semestre] = [];
@@ -36,6 +36,7 @@ function render() {
   Object.keys(ramosPorSemestre).forEach(sem => {
     const semDiv = document.createElement("div");
     semDiv.className = "semestre";
+
     const titulo = document.createElement("h2");
     titulo.textContent = `Sem ${sem}`;
     semDiv.appendChild(titulo);
@@ -50,8 +51,8 @@ function render() {
 
       if (r.requisitos.length > 0) {
         const nombresReq = r.requisitos.map(id => {
-          const reqRamo = ramos.find(x => x.id === id);
-          return reqRamo ? reqRamo.nombre : `ID ${id}`;
+          const req = ramos.find(x => x.id === id);
+          return req ? req.nombre : `ID ${id}`;
         }).join(", ");
         ramosDiv.title = `Prerrequisitos: ${nombresReq}`;
       }
@@ -74,26 +75,21 @@ function render() {
 function toggleRamos(id) {
   console.log("Se hizo click en ramo con id:", id);
   const clickRamo = ramos.find(r => r.id === id);
-
-  if (!clickRamo) {
-    console.error("Ramo no encontrado con id:", id);
-    return;
-  }
+  if (!clickRamo) return;
 
   if (clickRamo.activo) {
     clickRamo.activo = false;
     desactivarDependientes(clickRamo.id);
   } else {
-    const puedeActivarse = clickRamo.requisitos.every(req => {
-      const reqRamo = ramos.find(x => x.id === req);
-      return reqRamo && reqRamo.activo;
+    const puedeActivarse = clickRamo.requisitos.every(reqId => {
+      const req = ramos.find(r => r.id === reqId);
+      return req && req.activo;
     });
 
     if (puedeActivarse || clickRamo.requisitos.length === 0) {
       clickRamo.activo = true;
-      activarDependientes(clickRamo.id);
     } else {
-      console.log("No puede activarse porque prerrequisitos no activos");
+      console.log("No se puede activar. Faltan prerrequisitos.");
     }
   }
 
@@ -109,23 +105,10 @@ function desactivarDependientes(idDesactivado) {
   });
 }
 
-function activarDependientes(idActivado) {
-  ramos.forEach(r => {
-    if (!r.activo && r.requisitos.includes(idActivado)) {
-      const puedeActivarse = r.requisitos.every(req => {
-        const reqRamo = ramos.find(x => x.id === req);
-        return reqRamo && reqRamo.activo;
-      });
-      if (puedeActivarse) {
-        r.activo = true;
-        activarDependientes(r.id);
-      }
-    }
-  });
-}
-
 function reiniciarMalla() {
-  ramos.forEach(r => r.activo = r.requisitos.length === 0);
+  ramos.forEach(r => {
+    r.activo = r.requisitos.length === 0;
+  });
   render();
 }
 
