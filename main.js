@@ -1,8 +1,9 @@
 console.log("main.js cargado, ramos:", ramos ? ramos.length : "NO DEFINIDO");
+
 const STORAGE_KEY = "mallaActiva_IA";
 const ramosPorSemestre = {};
 
-// Organizar ramos por semestre
+// Organizar ramos por semestre y definir estado inicial
 ramos.forEach(r => {
   if (!ramosPorSemestre[r.semestre]) ramosPorSemestre[r.semestre] = [];
   ramosPorSemestre[r.semestre].push({ ...r, activo: r.requisitos.length === 0 });
@@ -38,7 +39,7 @@ function render() {
 
       if (r.activo) totalActivos++;
 
-      // Tooltip de prerrequisitos
+      // Tooltip prerrequisitos
       if (r.requisitos.length > 0) {
         const nombresReq = r.requisitos.map(id => {
           const reqRamos = ramos.find(x => x.id === id);
@@ -51,6 +52,7 @@ function render() {
         console.log("Añadiendo evento click a ramo:", r.id, r.nombre);
         toggleRamos(r.id);
       });
+
       semDiv.appendChild(ramosDiv);
     });
 
