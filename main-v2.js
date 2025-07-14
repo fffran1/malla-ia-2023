@@ -74,23 +74,38 @@ function render() {
 function toggleRamos(id) {
   console.log("Se hizo click en ramo con id:", id);
   const clickRamo = ramos.find(r => r.id === id);
-  if (!clickRamo) return;
+
+  if (!clickRamo) {
+    console.error("Ramo no encontrado con id:", id);
+    return;
+  }
 
   if (clickRamo.activo) {
     clickRamo.activo = false;
     desactivarDependientes(clickRamo.id);
   } else {
-    const puedeActivarse = clickRamo.requisitos.every(reqId => {
-      const req = ramos.find(r => r.id === reqId);
-      return req && req.activo;
+    const puedeActivarse = clickRamo.requisitos.every(req => {
+      const reqRamo = ramos.find(x => x.id === req);
+      return reqRamo && reqRamo.activo;
     });
 
-    if (puedeActivarse) {
+    if (puedeActivarse || clickRamo.requisitos.length === 0) {
       clickRamo.activo = true;
-    } else {
-      console.log("No se puede activar. Faltan prerrequisitos.");
     }
   }
+
+  // ✅ después de cambiar un ramo, revisa todos los que podrían activarse
+  ramos.forEach(r => {
+    if (!r.activo && r.requisitos.length > 0) {
+      const puedeActivarse = r.requisitos.every(req => {
+        const reqRamo = ramos.find(x => x.id === req);
+        return reqRamo && reqRamo.activo;
+      });
+      if (puedeActivarse) {
+        r.activo = true;
+      }
+    }
+  });
 
   render();
 }
