@@ -126,8 +126,8 @@
       semDiv.appendChild(titulo);
 
       ramosPorSemestre[sem].forEach(r => {
-        const ramoDiv = document.createElement("div");
-        ramosDiv.className = `ramo ${r.ambito} ${r.activo ? 'activo' : ''}`;
+        const ramosDiv = document.createElement("div");
+        ramosDiv.className = `ramos ${r.ambito} ${r.activo ? 'activo' : ''}`;
         ramosDiv.textContent = r.nombre;
         ramosDiv.dataset.id = r.id;
 
@@ -136,8 +136,8 @@
         // Tooltip de prerrequisitos
         if (r.requisitos.length > 0) {
           const nombresReq = r.requisitos.map(id => {
-            const reqRamo = ramos.find(x => x.id === id);
-            return reqRamo ? reqRamo.nombre : `ID ${id}`;
+            const reqRamos = ramos.find(x => x.id === id);
+            return reqRamos ? reqRamos.nombre : `ID ${id}`;
           }).join(", ");
           ramosDiv.title = `Prerrequisitos: ${nombresReq}`;
         }
@@ -153,7 +153,7 @@
     guardarEstado();
   }
 
-  function toggleRamo(id) {
+  function toggleRamos(id) {
     const clickRamo = ramos.find(r => r.id === id);
 
     if (clickRamos.activo) {
