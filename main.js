@@ -1,23 +1,31 @@
 console.log("main.js cargado, ramos:", ramos ? ramos.length : "NO DEFINIDO");
 const STORAGE_KEY = "mallaActiva_IA";
-const ramosPorSemestre = {};
 
-// Organizar ramos por semestre
-ramos.forEach(r => {
-  if (!ramosPorSemestre[r.semestre]) ramosPorSemestre[r.semestre] = [];
-  ramosPorSemestre[r.semestre].push({ ...r, activo: r.requisitos.length === 0 });
-});
+let ramosPorSemestre = {};
+let mallaContainer;
+let contadorRamos;
 
-const mallaContainer = document.getElementById("mallaContainer");
-const contadorRamos = document.getElementById("contadorRamos");
+window.addEventListener("DOMContentLoaded", () => {
+  mallaContainer = document.getElementById("mallaContainer");
+  contadorRamos = document.getElementById("contadorRamos");
 
-// Cargar estado desde localStorage si existe
-const estadoGuardado = JSON.parse(localStorage.getItem(STORAGE_KEY));
-if (estadoGuardado) {
+  // Organizar ramos por semestre
+  ramosPorSemestre = {};
   ramos.forEach(r => {
-    if (estadoGuardado[r.id] !== undefined) r.activo = estadoGuardado[r.id];
+    if (!ramosPorSemestre[r.semestre]) ramosPorSemestre[r.semestre] = [];
+    ramosPorSemestre[r.semestre].push({ ...r, activo: r.requisitos.length === 0 });
   });
-}
+
+  // Cargar estado guardado
+  const estadoGuardado = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if (estadoGuardado) {
+    ramos.forEach(r => {
+      if (estadoGuardado[r.id] !== undefined) r.activo = estadoGuardado[r.id];
+    });
+  }
+
+  render();
+});
 
 function render() {
   mallaContainer.innerHTML = "";
@@ -32,25 +40,25 @@ function render() {
 
     ramosPorSemestre[sem].forEach(r => {
       const ramosDiv = document.createElement("div");
-      ramosDiv.className = `ramos ${r.ambito} ${r.activo ? 'activo' : ''}`;
+      ramosDiv.className = `ramos ${r.ambito} ${r.activo ? "activo" : ""}`;
       ramosDiv.textContent = r.nombre;
       ramosDiv.dataset.id = r.id;
 
       if (r.activo) totalActivos++;
 
-      // Tooltip de prerrequisitos
       if (r.requisitos.length > 0) {
         const nombresReq = r.requisitos.map(id => {
-          const reqRamos = ramos.find(x => x.id === id);
-          return reqRamos ? reqRamos.nombre : `ID ${id}`;
+          const reqRamo = ramos.find(x => x.id === id);
+          return reqRamo ? reqRamo.nombre : `ID ${id}`;
         }).join(", ");
         ramosDiv.title = `Prerrequisitos: ${nombresReq}`;
       }
 
       ramosDiv.addEventListener("click", () => {
-        console.log("Añadiendo evento click a ramo:", r.id, r.nombre);
+        console.log("Click en ramo:", r.id, r.nombre);
         toggleRamos(r.id);
       });
+
       semDiv.appendChild(ramosDiv);
     });
 
@@ -65,12 +73,15 @@ function toggleRamos(id) {
   console.log("Se hizo click en ramo con id:", id);
   const clickRamo = ramos.find(r => r.id === id);
 
+  if (!clickRamo) {
+    console.error("Ramo no encontrado con id:", id);
+    return;
+  }
+
   if (clickRamo.activo) {
-    // Desactivar ramo y sus dependientes
     clickRamo.activo = false;
     desactivarDependientes(clickRamo.id);
   } else {
-    // Verificar si puede activarse
     const puedeActivarse = clickRamo.requisitos.every(req => {
       const reqRamo = ramos.find(x => x.id === req);
       return reqRamo && reqRamo.activo;
@@ -79,6 +90,8 @@ function toggleRamos(id) {
     if (puedeActivarse || clickRamo.requisitos.length === 0) {
       clickRamo.activo = true;
       activarDependientes(clickRamo.id);
+    } else {
+      console.log("No puede activarse porque prerrequisitos no activos");
     }
   }
 
@@ -119,7 +132,3 @@ function guardarEstado() {
   ramos.forEach(r => estado[r.id] = r.activo);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  render();
-});
