@@ -49,7 +49,7 @@
     .semestre h2 {
       text-align: center;
     }
-    .ramo {
+    .ramos {
       background: #fff;
       border-left: 5px solid gray;
       padding: 0.5rem;
@@ -58,7 +58,7 @@
       transition: all 0.2s ease-in-out;
       opacity: 0.6;
     }
-    .ramo.activo {
+    .ramos.activo {
       opacity: 1;
       box-shadow: 0 0 5px #ccc;
     }
@@ -70,11 +70,11 @@
     .am-ingles         { border-color: #9b59b6; }
     .am-investigacion  { border-color: #e74c3c; }
 
-    .ramo:hover {
+    .ramos:hover {
       transform: scale(1.02);
     }
 
-    .ramo[title] {
+    .ramos[title] {
       position: relative;
     }
   </style>
@@ -127,9 +127,9 @@
 
       ramosPorSemestre[sem].forEach(r => {
         const ramoDiv = document.createElement("div");
-        ramoDiv.className = `ramo ${r.ambito} ${r.activo ? 'activo' : ''}`;
-        ramoDiv.textContent = r.nombre;
-        ramoDiv.dataset.id = r.id;
+        ramosDiv.className = `ramo ${r.ambito} ${r.activo ? 'activo' : ''}`;
+        ramosDiv.textContent = r.nombre;
+        ramosDiv.dataset.id = r.id;
 
         if (r.activo) totalActivos++;
 
@@ -139,11 +139,11 @@
             const reqRamo = ramos.find(x => x.id === id);
             return reqRamo ? reqRamo.nombre : `ID ${id}`;
           }).join(", ");
-          ramoDiv.title = `Prerrequisitos: ${nombresReq}`;
+          ramosDiv.title = `Prerrequisitos: ${nombresReq}`;
         }
 
-        ramoDiv.addEventListener("click", () => toggleRamo(r.id));
-        semDiv.appendChild(ramoDiv);
+        ramosDiv.addEventListener("click", () => toggleRamos(r.id));
+        semDiv.appendChild(ramosDiv);
       });
 
       mallaContainer.appendChild(semDiv);
@@ -156,17 +156,17 @@
   function toggleRamo(id) {
     const clickRamo = ramos.find(r => r.id === id);
 
-    if (clickRamo.activo) {
-      clickRamo.activo = false;
-      desactivarDependientes(clickRamo.id);
+    if (clickRamos.activo) {
+      clickRamos.activo = false;
+      desactivarDependientes(clickRamos.id);
     } else {
-      const puedeActivarse = clickRamo.requisitos.every(req => {
-        const reqRamo = ramos.find(x => x.id === req);
-        return reqRamo && reqRamo.activo;
+      const puedeActivarse = clickRamos.requisitos.every(req => {
+        const reqRamos = ramos.find(x => x.id === req);
+        return reqRamos && reqRamos.activo;
       });
 
-      if (puedeActivarse || clickRamo.requisitos.length === 0) {
-        clickRamo.activo = true;
+      if (puedeActivarse || clickRamos.requisitos.length === 0) {
+        clickRamos.activo = true;
       }
     }
 
