@@ -107,3 +107,4 @@ function guardarEstado() {
 window.addEventListener("DOMContentLoaded", () => {
   render();
 });
+
