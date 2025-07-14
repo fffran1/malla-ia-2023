@@ -156,17 +156,17 @@
   function toggleRamos(id) {
     const clickRamo = ramos.find(r => r.id === id);
 
-    if (clickRamos.activo) {
-      clickRamos.activo = false;
-      desactivarDependientes(clickRamos.id);
+    if (clickRamo.activo) {
+      clickRamo.activo = false;
+      desactivarDependientes(clickRamo.id);
     } else {
-      const puedeActivarse = clickRamos.requisitos.every(req => {
-        const reqRamos = ramos.find(x => x.id === req);
-        return reqRamos && reqRamos.activo;
+      const puedeActivarse = clickRamo.requisitos.every(req => {
+        const reqRamo = ramos.find(x => x.id === req);
+        return reqRamo && reqRamo.activo;
       });
 
-      if (puedeActivarse || clickRamos.requisitos.length === 0) {
-        clickRamos.activo = true;
+      if (puedeActivarse || clickRamo.requisitos.length === 0) {
+        clickRamo.activo = true;
       }
     }
 
