@@ -73,7 +73,7 @@ const ramos = [
   { id: 63, nombre: "Ingeniería de Procesos de Lácteos", semestre: 10, ambito: "am-industria", requisitos: [51, 52] },
   { id: 64, nombre: "Ingeniería de Procesos de Productos del Mar", semestre: 10, ambito: "am-industria", requisitos: [51, 52] },
   { id: 65, nombre: "Ingeniería de Procesos en Fermentaciones", semestre: 10, ambito: "am-industria", requisitos: [49, 50] },
-  { id: 66, nombre: "Gestión de Calidad", semestre: 10, ambito: "am-industria", requisitos: [50] },
+  { id: 66, nombre: "Gestión de Calidad", semestre: 10, ambito: "am-industria", requisitos: [47, 56] },
   { id: 67, nombre: "Electivos Especializados", semestre: 10, ambito: "am-intermedio", requisitos: [49, 50, 51, 52, 53, 54, 55] },
 
   { id: 68, nombre: "Práctica Profesional", semestre: 11, ambito: "am-industria", requisitos: [63, 64, 65, 66, 67] },
