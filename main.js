@@ -19,8 +19,7 @@ if (estadoGuardado) {
   });
 }
 
-function render(console.log("Añadiendo evento click a ramo:", r.id, r.nombre);
-) {
+function render() {
   mallaContainer.innerHTML = "";
   let totalActivos = 0;
 
@@ -48,13 +47,12 @@ function render(console.log("Añadiendo evento click a ramo:", r.id, r.nombre);
         ramosDiv.title = `Prerrequisitos: ${nombresReq}`;
       }
 
-      ramosDiv.addEventListener("click", () => toggleRamos(r.id));
+      ramosDiv.addEventListener("click", () => {
+        console.log("Añadiendo evento click a ramo:", r.id, r.nombre);
+        toggleRamos(r.id);
+      });
       semDiv.appendChild(ramosDiv);
     });
-    function toggleRamos(id) {
-  console.log("Se hizo click en ramo con id:", id);
-  // resto...
-}
 
     mallaContainer.appendChild(semDiv);
   });
@@ -64,6 +62,7 @@ function render(console.log("Añadiendo evento click a ramo:", r.id, r.nombre);
 }
 
 function toggleRamos(id) {
+  console.log("Se hizo click en ramo con id:", id);
   const clickRamo = ramos.find(r => r.id === id);
 
   if (clickRamo.activo) {
