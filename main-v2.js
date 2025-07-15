@@ -39,7 +39,7 @@ function render() {
     semDiv.appendChild(titulo);
 
     ramosPorSemestre[sem].forEach(r => {
-      const puedeActivarseAhora = r.requisitos.length > 0 && r.requisitos.every(id => {
+      const puedeActivarseAhora = r.requisitos.every(id => {
         const req = ramos.find(x => x.id === id);
         return req && req.activo;
       });
@@ -51,16 +51,16 @@ function render() {
 
       if (r.activo) totalActivos++;
 
-      // ✅ Mostrar tooltip en todos los ramos bloqueados con requisitos
+      // ✅ Mostrar tooltip si el ramo está bloqueado y tiene requisitos
       if (!r.activo && r.requisitos.length > 0) {
         const nombresReq = r.requisitos.map(id => {
-          const reqRamo = ramos.find(x => x.id === id);
-          return reqRamo ? reqRamo.nombre : `ID ${id}`;
+          const req = ramos.find(x => x.id === id);
+          return req ? req.nombre : `ID ${id}`;
         }).join(", ");
         rDiv.title = `Necesita aprobar: ${nombresReq}`;
       }
 
-      // Click solo si es activable o ya activo
+      // Control de clic solo si se puede activar
       if (r.activo || puedeActivarseAhora) {
         rDiv.style.cursor = "pointer";
         rDiv.addEventListener("click", () => toggleRamos(r.id));
@@ -95,7 +95,7 @@ function toggleRamos(id) {
     }
   }
 
-  // Revisión en cascada
+  // Revisión de desbloqueos en cascada
   ramos.forEach(r => {
     if (!r.activo && r.requisitos.length > 0) {
       const puede = r.requisitos.every(id => {
