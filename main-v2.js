@@ -9,7 +9,15 @@ window.addEventListener("DOMContentLoaded", () => {
   mallaContainer = document.getElementById("mallaContainer");
   contadorRamos = document.getElementById("contadorRamos");
 
-  const estadoGuardado = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  const estadoGuardado = (() => {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : {};
+    } catch (e) {
+      console.error("Error leyendo estado guardado:", e);
+      return {};
+    }
+  })();
 
   ramosPorSemestre = {};
   ramos.forEach(r => {
@@ -18,7 +26,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (estadoGuardado[r.id] !== undefined) {
       r.activo = estadoGuardado[r.id];
     } else {
-      r.activo = r.requisitos.length === 0;
+      r.activo = r.requisitos.length === 0; // activos por defecto si no tienen prerrequisitos
     }
 
     ramosPorSemestre[r.semestre].push(r);
@@ -39,31 +47,30 @@ function render() {
     semDiv.appendChild(titulo);
 
     ramosPorSemestre[sem].forEach(r => {
-      const puedeActivarseAhora = r.requisitos.every(id => {
-        const req = ramos.find(x => x.id === id);
-        return req && req.activo;
-      });
+      // Determinar si está desbloqueado (prerrequisitos activos) pero no activo
+      const desbloqueado = !r.activo && puedeActivarse(r);
 
       const rDiv = document.createElement("div");
-      rDiv.className = `ramos ${r.ambito} ${r.activo ? "activo" : ""}`;
+      rDiv.className = `ramos ${r.ambito} ${r.activo ? "activo" : ""} ${desbloqueado ? "desbloqueado" : ""}`;
       rDiv.textContent = r.nombre;
       rDiv.dataset.id = r.id;
 
       if (r.activo) totalActivos++;
 
-      // ✅ Mostrar tooltip si el ramo está bloqueado y tiene requisitos
-      if (!r.activo && r.requisitos.length > 0) {
+      if (r.requisitos.length > 0) {
         const nombresReq = r.requisitos.map(id => {
-          const req = ramos.find(x => x.id === id);
-          return req ? req.nombre : `ID ${id}`;
+          const reqRamo = ramos.find(x => x.id === id);
+          return reqRamo ? reqRamo.nombre : `ID ${id}`;
         }).join(", ");
-        rDiv.title = `Necesita aprobar: ${nombresReq}`;
+        rDiv.title = `Prerrequisitos: ${nombresReq}`;
       }
 
-      // Control de clic solo si se puede activar
-      if (r.activo || puedeActivarseAhora) {
+      // Sólo agregar evento click si activo o desbloqueado
+      if (r.activo || desbloqueado) {
         rDiv.style.cursor = "pointer";
-        rDiv.addEventListener("click", () => toggleRamos(r.id));
+        rDiv.addEventListener("click", () => {
+          toggleRamos(r.id);
+        });
       } else {
         rDiv.style.cursor = "not-allowed";
       }
@@ -78,6 +85,13 @@ function render() {
   guardarEstado();
 }
 
+function puedeActivarse(ramo) {
+  return ramo.requisitos.every(idReq => {
+    const r = ramos.find(x => x.id === idReq);
+    return r && r.activo;
+  });
+}
+
 function toggleRamos(id) {
   const ramo = ramos.find(r => r.id === id);
   if (!ramo) return;
@@ -86,32 +100,20 @@ function toggleRamos(id) {
     ramo.activo = false;
     desactivarDependientes(ramo.id);
   } else {
-    const puedeActivarse = ramo.requisitos.every(idReq => {
-      const req = ramos.find(x => x.id === idReq);
-      return req && req.activo;
-    });
-    if (puedeActivarse || ramo.requisitos.length === 0) {
+    if (puedeActivarse(ramo)) {
       ramo.activo = true;
+    } else {
+      // No hace nada si prerrequisitos no están activos
+      return;
     }
   }
-
-  // Revisión de desbloqueos en cascada
-  ramos.forEach(r => {
-    if (!r.activo && r.requisitos.length > 0) {
-      const puede = r.requisitos.every(id => {
-        const req = ramos.find(x => x.id === id);
-        return req && req.activo;
-      });
-      if (puede) r.activo = true;
-    }
-  });
 
   render();
 }
 
-function desactivarDependientes(idDesactivado) {
+function desactivarDependientes(id) {
   ramos.forEach(r => {
-    if (r.requisitos.includes(idDesactivado) && r.activo) {
+    if (r.requisitos.includes(id) && r.activo) {
       r.activo = false;
       desactivarDependientes(r.id);
     }
@@ -119,17 +121,13 @@ function desactivarDependientes(idDesactivado) {
 }
 
 function reiniciarMalla() {
-  ramos.forEach(r => {
-    r.activo = r.requisitos.length === 0;
-  });
+  ramos.forEach(r => r.activo = r.requisitos.length === 0);
   guardarEstado();
   render();
 }
 
 function guardarEstado() {
   const estado = {};
-  ramos.forEach(r => {
-    estado[r.id] = r.activo;
-  });
+  ramos.forEach(r => estado[r.id] = r.activo);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
 }
