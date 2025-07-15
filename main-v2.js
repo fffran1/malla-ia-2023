@@ -57,12 +57,21 @@ function render() {
 
       if (r.activo) totalActivos++;
 
-      if (r.requisitos.length > 0) {
+      // Aquí se agrega la lógica para tooltip solo en ramos bloqueados
+      if (!r.activo && r.requisitos.length > 0) {
         const nombresReq = r.requisitos.map(id => {
           const reqRamo = ramos.find(x => x.id === id);
           return reqRamo ? reqRamo.nombre : `ID ${id}`;
         }).join(", ");
-        rDiv.title = `Prerrequisitos: ${nombresReq}`;
+        rDiv.title = `Necesita aprobar: ${nombresReq}`;
+      } else if (r.requisitos.length > 0) {
+        // Mantener tooltip con prerrequisitos para ramos activos si quieres, o dejar vacío:
+        rDiv.title = `Prerrequisitos: ${r.requisitos.map(id => {
+          const reqRamo = ramos.find(x => x.id === id);
+          return reqRamo ? reqRamo.nombre : `ID ${id}`;
+        }).join(", ")}`;
+      } else {
+        rDiv.title = "";
       }
 
       // Sólo agregar evento click si activo o desbloqueado
