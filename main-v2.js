@@ -47,7 +47,6 @@ function render() {
     semDiv.appendChild(titulo);
 
     ramosPorSemestre[sem].forEach(r => {
-      // Determinar si está desbloqueado (prerrequisitos activos) pero no activo
       const desbloqueado = !r.activo && puedeActivarse(r);
 
       const rDiv = document.createElement("div");
@@ -57,15 +56,15 @@ function render() {
 
       if (r.activo) totalActivos++;
 
-      if (r.requisitos.length > 0) {
+      // ⬇️ Mostrar tooltip solo si el ramo está bloqueado
+      if (r.requisitos.length > 0 && !r.activo && !desbloqueado) {
         const nombresReq = r.requisitos.map(id => {
           const reqRamo = ramos.find(x => x.id === id);
           return reqRamo ? reqRamo.nombre : `ID ${id}`;
         }).join(", ");
-        rDiv.title = `Prerrequisitos: ${nombresReq}`;
+        rDiv.title = `Necesita aprobar: ${nombresReq}`;
       }
 
-      // Sólo agregar evento click si activo o desbloqueado
       if (r.activo || desbloqueado) {
         rDiv.style.cursor = "pointer";
         rDiv.addEventListener("click", () => {
@@ -103,8 +102,7 @@ function toggleRamos(id) {
     if (puedeActivarse(ramo)) {
       ramo.activo = true;
     } else {
-      // No hace nada si prerrequisitos no están activos
-      return;
+      return; // no cumple requisitos, no hacer nada
     }
   }
 
