@@ -26,7 +26,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (estadoGuardado[r.id] !== undefined) {
       r.activo = estadoGuardado[r.id];
     } else {
-      r.activo = r.requisitos.length === 0; // activos por defecto si no tienen prerrequisitos
+      r.activo = r.requisitos.length === 0;
     }
 
     ramosPorSemestre[r.semestre].push(r);
@@ -47,7 +47,6 @@ function render() {
     semDiv.appendChild(titulo);
 
     ramosPorSemestre[sem].forEach(r => {
-      // Determinar si está desbloqueado (prerrequisitos activos) pero no activo
       const desbloqueado = !r.activo && puedeActivarse(r);
 
       const rDiv = document.createElement("div");
@@ -57,31 +56,25 @@ function render() {
 
       if (r.activo) totalActivos++;
 
-      // Aquí se agrega la lógica para tooltip solo en ramos bloqueados
-      if (!r.activo && r.requisitos.length > 0) {
+      // Tooltip siempre si tiene requisitos
+      if (r.requisitos.length > 0) {
         const nombresReq = r.requisitos.map(id => {
           const reqRamo = ramos.find(x => x.id === id);
           return reqRamo ? reqRamo.nombre : `ID ${id}`;
         }).join(", ");
         rDiv.title = `Necesita aprobar: ${nombresReq}`;
-      } else if (r.requisitos.length > 0) {
-        // Mantener tooltip con prerrequisitos para ramos activos si quieres, o dejar vacío:
-        rDiv.title = `Prerrequisitos: ${r.requisitos.map(id => {
-          const reqRamo = ramos.find(x => x.id === id);
-          return reqRamo ? reqRamo.nombre : `ID ${id}`;
-        }).join(", ")}`;
       } else {
         rDiv.title = "";
       }
 
-      // Sólo agregar evento click si activo o desbloqueado
+      // Cursor y click solo si activo o desbloqueado
       if (r.activo || desbloqueado) {
         rDiv.style.cursor = "pointer";
         rDiv.addEventListener("click", () => {
           toggleRamos(r.id);
         });
       } else {
-        rDiv.style.cursor = "not-allowed";
+        rDiv.style.cursor = "default"; // no usar not-allowed para que tooltip funcione bien
       }
 
       semDiv.appendChild(rDiv);
@@ -112,7 +105,6 @@ function toggleRamos(id) {
     if (puedeActivarse(ramo)) {
       ramo.activo = true;
     } else {
-      // No hace nada si prerrequisitos no están activos
       return;
     }
   }
@@ -140,3 +132,4 @@ function guardarEstado() {
   ramos.forEach(r => estado[r.id] = r.activo);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
 }
+
